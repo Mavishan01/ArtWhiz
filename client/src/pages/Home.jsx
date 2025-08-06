@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styled, { keyframes } from 'styled-components';
+import { useNavigate, useLocation } from 'react-router-dom';
+
 
 const fadeInUp = keyframes`
   from {
@@ -328,6 +330,9 @@ const SectionTitle = styled.h2`
 `;
 
 const Home = () => {
+
+  const navigate = useNavigate();
+  
   const [stats, setStats] = useState({
     images: 0,
     users: 0,
@@ -378,7 +383,7 @@ const Home = () => {
         </Description>
 
         <CTAContainer>
-          <PrimaryButton>Start Creating Now</PrimaryButton>
+          <PrimaryButton onClick={() => navigate("/createPost")}>Start Creating Now</PrimaryButton>
           <SecondaryButton>Explore Gallery</SecondaryButton>
         </CTAContainer>
 

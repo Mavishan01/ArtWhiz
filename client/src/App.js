@@ -5,6 +5,7 @@ import CreatePost from "./pages/CreatePost";
 import { BrowserRouter } from "react-router-dom";
 import { Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
+import Explore from "./pages/Explore";
 
 const Container = styled.div`
   width: 100%;
@@ -34,7 +35,8 @@ function App() {
           <Navbar />
           <Routes>
             <Route path="/" element={<Home />} exact />
-            <Route path="/post" element={<CreatePost />} exact />
+            <Route path="/createPost" element={<CreatePost />} exact />
+            <Route path="/explore" element={<Explore />} exact />
           </Routes>
         </BrowserRouter>
       </Wrapper>

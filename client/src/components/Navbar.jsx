@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { ExploreRounded, HomeRounded, AccountCircleRounded, CollectionsRounded } from '@mui/icons-material';
+import { ExploreRounded, HomeRounded, AccountCircleRounded, CollectionsRounded, CreateRounded } from '@mui/icons-material';
 import { useNavigate, useLocation } from 'react-router-dom';
 
 const Container = styled.div`
@@ -123,6 +123,14 @@ const Navbar = () => {
         >
           <CollectionsRounded fontSize="small" />
           <span>My Creations</span>
+        </NavButton>
+
+        <NavButton 
+          active={path === "createPost"}
+          onClick={() => navigate("/createPost")}
+        >
+          <CreateRounded fontSize="small" />
+          <span>Create Post</span>
         </NavButton>
         
         <NavButton 
