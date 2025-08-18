@@ -96,7 +96,7 @@ const Navbar = () => {
   return (
     <Container>
       <Logo onClick={() => navigate("/")}>
-        ImgGen AI
+        ArtWhiz
       </Logo>
       
       {/* Desktop Navigation */}
