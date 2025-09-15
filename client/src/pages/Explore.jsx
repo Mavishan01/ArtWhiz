@@ -1,82 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import ImageCard from '../components/ImageCard';
 import { SearchRounded, FilterListRounded, GridViewRounded } from '@mui/icons-material';
-
-const dummyImageData = [
-  {
-    id: 1,
-    imageUrl: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop",
-    prompt: "A majestic dragon soaring through storm clouds with lightning illuminating its scales in cyberpunk neon colors",
-    author: "Alex Chen",
-    style: "Cyberpunk",
-    likes: 127,
-    timeAgo: "2h ago"
-  },
-  {
-    id: 2,
-    imageUrl: "https://images.unsplash.com/photo-1518837695005-2083093ee35b?w=400&h=350&fit=crop",
-    prompt: "Enchanted forest with glowing mushrooms and fairy lights dancing between ancient oak trees",
-    author: "Sarah Williams",
-    style: "Fantasy Art",
-    likes: 89,
-    timeAgo: "4h ago"
-  },
-  {
-    id: 3,
-    imageUrl: "https://images.unsplash.com/photo-1419242902214-272b3f66ee7a?w=400&h=280&fit=crop",
-    prompt: "Futuristic city skyline at sunset with flying cars and holographic advertisements floating in mid-air",
-    author: "Mike Rodriguez",
-    style: "Sci-Fi",
-    likes: 203,
-    timeAgo: "6h ago"
-  },
-  {
-    id: 4,
-    imageUrl: "https://images.unsplash.com/photo-1501594907352-04cda38ebc29?w=400&h=320&fit=crop",
-    prompt: "Serene Japanese garden with cherry blossoms falling over a traditional wooden bridge and koi pond",
-    author: "Yuki Tanaka",
-    style: "Traditional",
-    likes: 156,
-    timeAgo: "8h ago"
-  },
-  {
-    id: 5,
-    imageUrl: "https://images.unsplash.com/photo-1754110634187-3a40e4744a80?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    prompt: "Abstract geometric patterns in vibrant purple and gold creating a kaleidoscope effect with crystalline structures",
-    author: "Emma Thompson",
-    style: "Abstract",
-    likes: 74,
-    timeAgo: "12h ago"
-  },
-  {
-    id: 6,
-    imageUrl: "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=400&h=380&fit=crop",
-    prompt: "Mystical underwater city with bioluminescent coral structures and swimming mermaids",
-    author: "Ocean Explorer",
-    style: "Fantasy Art",
-    likes: 98,
-    timeAgo: "1d ago"
-  },
-  {
-    id: 7,
-    imageUrl: "https://images.unsplash.com/photo-1511593358241-7eea1f3c84e5?w=400&h=220&fit=crop",
-    prompt: "Minimalist geometric architecture with clean lines and dramatic shadows",
-    author: "Design Architect",
-    style: "Minimalist",
-    likes: 145,
-    timeAgo: "1d ago"
-  },
-  {
-    id: 8,
-    imageUrl: "https://images.unsplash.com/photo-1493246507139-91e8fad9978e?w=400&h=340&fit=crop",
-    prompt: "Steampunk airship floating above Victorian London with brass gears and steam",
-    author: "Victorian Dreamer",
-    style: "Steampunk",
-    likes: 167,
-    timeAgo: "2d ago"
-  }
-];
 
 const Container = styled.div`
   height: 100vh;
@@ -265,12 +190,34 @@ const StatLabel = styled.div`
 const Explore = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [visibleItems, setVisibleItems] = useState(8);
+  const [posts, setPosts] = useState([]);
+  const [filteredData, setfilteredData] = useState([]);
 
   const loadMore = () => {
     setVisibleItems(prev => prev + 8);
   };
 
-  const filteredData = dummyImageData.slice(0, visibleItems);
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        const response = await fetch("http://localhost:8080/api/post/getAllPosts");
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const result = await response.json();
+        setPosts(result.data || []);
+      } catch (error) {
+        console.error("Failed to fetch posts:", error);
+        setPosts([]);
+      }
+    };
+
+    fetchPosts();
+  }, []);
+
+  useEffect(() => {
+    setfilteredData(posts.slice(0, visibleItems));
+  },[posts, visibleItems]);
 
   return (
     <Container>
@@ -317,19 +264,19 @@ const Explore = () => {
             <ImageCard 
               imageUrl={data.imageUrl}
               prompt={data.prompt}
-              author={data.author}
-              style={data.style}
-              likes={data.likes}
-              timeAgo={data.timeAgo}
-              onLike={(liked) => console.log(`${liked ? 'Liked' : 'Unliked'} image ${data.id}`)}
-              onBookmark={(bookmarked) => console.log(`${bookmarked ? 'Bookmarked' : 'Unbookmarked'} image ${data.id}`)}
-              onShare={() => console.log(`Shared image ${data.id}`)}
+              // author={data.author}
+              // style={data.style}
+              // likes={data.likes}
+              // timeAgo={data.timeAgo}
+              // onLike={(liked) => console.log(`${liked ? 'Liked' : 'Unliked'} image ${data.id}`)}
+              // onBookmark={(bookmarked) => console.log(`${bookmarked ? 'Bookmarked' : 'Unbookmarked'} image ${data.id}`)}
+              // onShare={() => console.log(`Shared image ${data.id}`)}
             />
           </CardWrapper>
         ))}
       </MasonryGrid>
 
-      {visibleItems < dummyImageData.length && (
+      {visibleItems < posts.length && (
         <LoadMoreButton onClick={loadMore}>
           Load More Creations
         </LoadMoreButton>

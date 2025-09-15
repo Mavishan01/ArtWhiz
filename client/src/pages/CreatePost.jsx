@@ -131,22 +131,6 @@ const CharCount = styled.span`
   color: ${({ theme }) => theme.text_secondary};
 `;
 
-const ExampleButton = styled.button`
-  background: none;
-  border: 1px solid ${({ theme }) => theme.primary}40;
-  border-radius: 8px;
-  padding: 6px 12px;
-  color: ${({ theme }) => theme.primary};
-  font-size: 12px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-
-  &:hover {
-    background: ${({ theme }) => theme.primary}10;
-    border-color: ${({ theme }) => theme.primary};
-  }
-`;
-
 const StyleGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
@@ -436,18 +420,58 @@ const CreatePost = () => {
 
   const handleGenerate = async () => {
     if (!prompt.trim()) return;
-    
+
     setIsGenerating(true);
-    // Simulate generation process
-    setTimeout(() => {
-      setGeneratedImage({
-        url: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=512&h=512&fit=crop",
-        prompt: prompt,
-        style: selectedStyle,
-        timestamp: new Date().toISOString()
+
+    try {
+      const response = await fetch("http://localhost:8080/api/generateImage", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          prompt,
+          style: selectedStyle,
+        }),
       });
+
+      if (!response.ok) {
+        throw new Error("Failed to generate image");
+      }
+    
+      const result = await response.json();
+        setGeneratedImage({
+          url: result.image,
+          prompt,
+          style: selectedStyle,
+          timestamp: new Date().toISOString(),
+        });
+
+      // console.log('url: ', result.image);
+
+      // image sending for Cloudinary + MongoDB
+      const saveResponse = await fetch("http://localhost:8080/api/post/createPost", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: "Alice Johnson",
+          prompt,
+          image: result.image,
+        })
+      });
+
+      if (!saveResponse.ok) throw new Error("Failed to save post");
+
+      const savedPost = await saveResponse.json();
+      console.log("Post saved:", savedPost.data);
+
+
+    } catch (error) {
+      console.error("Error generating image:", error);
+      alert("Failed to generate image. Please try again.");
+    } finally {
       setIsGenerating(false);
-    }, 3000);
+    }
   };
 
 
@@ -482,11 +506,6 @@ const CreatePost = () => {
                 <CharCount>
                   {prompt.length}/500 characters
                 </CharCount>
-                <ExampleButton
-                  onClick={() => setPrompt('A mystical fantasy landscape with floating islands, waterfalls cascading into clouds, ethereal lighting, and magical creatures')}
-                >
-                  Use Example
-                </ExampleButton>
               </PromptFooter>
             </Card>
 

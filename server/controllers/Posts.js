@@ -32,7 +32,7 @@ export const createPost = async (req, res, next) => {
         const newPost = await Post.create({
             name,
             prompt,
-            image: imageUrl.secure_url
+            imageUrl: imageUrl.secure_url
         });
 
         return res.status(201).json({
