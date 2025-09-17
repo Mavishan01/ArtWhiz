@@ -462,8 +462,8 @@ const CreatePost = () => {
 
       if (!saveResponse.ok) throw new Error("Failed to save post");
 
-      const savedPost = await saveResponse.json();
-      console.log("Post saved:", savedPost.data);
+      // const savedPost = await saveResponse.json();
+      // console.log("Post saved:", savedPost.data);
 
 
     } catch (error) {

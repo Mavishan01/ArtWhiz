@@ -245,15 +245,15 @@ const Explore = () => {
 
       <StatsBar>
         <StatItem>
-          <StatNumber>12,847</StatNumber>
+          <StatNumber>{posts?.length ?? 0}</StatNumber>
           <StatLabel>Total Images</StatLabel>
         </StatItem>
         <StatItem>
-          <StatNumber>2,156</StatNumber>
+          <StatNumber>0</StatNumber>
           <StatLabel>Artists</StatLabel>
         </StatItem>
         <StatItem>
-          <StatNumber>45</StatNumber>
+          <StatNumber>0</StatNumber>
           <StatLabel>Art Styles</StatLabel>
         </StatItem>
       </StatsBar>

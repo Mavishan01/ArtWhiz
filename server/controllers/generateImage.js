@@ -48,7 +48,7 @@ export async function generateImage(req, res) {
     const ai = new GoogleGenAI({});
 
     const response = await ai.models.generateImages({
-      model: 'imagen-4.0-generate-001',
+      model: 'imagen-4.0-fast-generate-001',
       prompt: prompt || 'no input',
       config: {
         numberOfImages: 1,
@@ -61,12 +61,12 @@ export async function generateImage(req, res) {
       fs.writeFileSync(`imagen-${Date.now()}.png`, buffer);
       
       console.log("Image Saved");
-      console.log('buffer: ', buffer);
+      // console.log('buffer: ', buffer);
 
       // convert buffer to base64 Data URL
       const base64Data = buffer.toString("base64");
       const dataUrl = `data:image/png;base64,${base64Data}`;
-      console.log('url: ', dataUrl);
+      // console.log('url: ', dataUrl);
 
       // send to frontend as JSON
       res.json({ image: dataUrl });
