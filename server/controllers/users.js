@@ -1,5 +1,9 @@
 import User from "../models/Users.js";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+import * as dotenv from "dotenv";
+
+dotenv.config();
 
 export const signup = async (req, res, next) => {
     try {
@@ -39,7 +43,6 @@ export const signup = async (req, res, next) => {
 export const login = async (req, res, next) => {
     try {
         const { email, password } = req.body;
-        const hashedPassword = await bcrypt.hash(password, 10);
 
         const user = await User.findOne({ email });
         if (!user) {
@@ -58,6 +61,13 @@ export const login = async (req, res, next) => {
             });
         }
 
+        // JWT token
+        const token = jwt.sign(
+        { id: user._id, email: user.email },
+        process.env.JWT_SECRET,
+        { expiresIn: "7d" }
+        );
+
         const userWithoutPassword = user.toObject();
         delete userWithoutPassword.password;
 
@@ -65,6 +75,7 @@ export const login = async (req, res, next) => {
             success: true,
             data: userWithoutPassword,
             message: "Logged in successfully",
+            token,
         });
 
     } catch (error) {

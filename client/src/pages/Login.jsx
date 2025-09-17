@@ -241,8 +241,8 @@ const Login = () => {
 
       console.log("Login success:", data);
 
-      // Optionally store token or navigate
-      // localStorage.setItem("token", data.token);
+      localStorage.setItem("user", JSON.stringify(data.data));
+      localStorage.setItem("token", data.token);
       navigate("/explore");
 
     } catch (error) {

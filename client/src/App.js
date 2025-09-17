@@ -8,6 +8,7 @@ import Navbar from "./components/Navbar";
 import Explore from "./pages/Explore";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
+import { Navigate } from "react-router-dom";
 
 const Container = styled.div`
   width: 100%;
@@ -29,6 +30,11 @@ const Wrapper = styled.div`
   flex: 3;
 `;
 
+const PrivateRoute = ({ children }) => {
+  const token = localStorage.getItem("token");
+  return token ? children : <Navigate to="/login" />;
+};
+
 function App() {
   return <ThemeProvider theme={darkTheme}>
     <Container>
@@ -37,10 +43,10 @@ function App() {
           <Navbar />
           <Routes>
             <Route path="/" element={<Home />} exact />
-            <Route path="/createPost" element={<CreatePost />} exact />
-            <Route path="/explore" element={<Explore />} exact />
             <Route path="/login" element={<Login />} exact />
             <Route path="/signup" element={<Signup />} exact />
+            <Route path="/explore" element={<PrivateRoute><Explore /></PrivateRoute>}/>
+            <Route path="/createPost" element={<PrivateRoute><CreatePost /></PrivateRoute>}/>
           </Routes>
         </BrowserRouter>
       </Wrapper>
