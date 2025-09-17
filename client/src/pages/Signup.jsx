@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { FaPaintBrush } from "react-icons/fa";
+import { useNavigate } from 'react-router-dom';
 
 const fadeInUp = keyframes`
   from {
@@ -151,65 +152,6 @@ const Input = styled.input`
   }
 `;
 
-const CheckboxContainer = styled.div`
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  margin-top: 8px;
-`;
-
-const Checkbox = styled.input`
-  appearance: none;
-  width: 20px;
-  height: 20px;
-  border: 2px solid ${({ theme }) => theme.text_secondary}40;
-  border-radius: 4px;
-  background: ${({ theme }) => theme.bgLight};
-  cursor: pointer;
-  position: relative;
-  margin-top: 2px;
-  transition: all 0.3s ease;
-
-  &:checked {
-    background: linear-gradient(135deg, ${({ theme }) => theme.primary}, ${({ theme }) => theme.secondary});
-    border-color: ${({ theme }) => theme.primary};
-  }
-
-  &:checked::after {
-    content: '✓';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    color: white;
-    font-size: 12px;
-    font-weight: bold;
-  }
-
-  &:hover {
-    border-color: ${({ theme }) => theme.primary};
-  }
-`;
-
-const CheckboxLabel = styled.label`
-  color: ${({ theme }) => theme.text_secondary};
-  font-size: 14px;
-  line-height: 1.5;
-  cursor: pointer;
-
-  a {
-    color: ${({ theme }) => theme.primary};
-    text-decoration: none;
-    font-weight: 500;
-    transition: all 0.3s ease;
-
-    &:hover {
-      color: ${({ theme }) => theme.secondary};
-      text-shadow: 0 0 8px ${({ theme }) => theme.secondary}40;
-    }
-  }
-`;
-
 const SignupButton = styled.button`
   background: linear-gradient(135deg, ${({ theme }) => theme.primary}, ${({ theme }) => theme.secondary});
   color: white;
@@ -245,11 +187,12 @@ const LoginLink = styled.p`
   margin-top: 24px;
   font-size: 14px;
 
-  a {
+  span {
     color: ${({ theme }) => theme.primary};
     text-decoration: none;
     font-weight: 600;
     transition: all 0.3s ease;
+    cursor: pointer;
 
     &:hover {
       color: ${({ theme }) => theme.secondary};
@@ -259,6 +202,10 @@ const LoginLink = styled.p`
 `;
 
 const Signup = () => {
+
+const navigate = useNavigate();
+
+
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -278,20 +225,16 @@ const Signup = () => {
   };
 
   const handleSubmit = async () => {
+
     if (formData.password !== formData.confirmPassword) {
       alert('Passwords do not match!');
-      return;
-    }
-
-    if (!formData.agreeToTerms) {
-      alert('Please agree to the Terms of Service and Privacy Policy');
       return;
     }
 
     setIsLoading(true);
     
     try {
-    const res = await fetch("http://localhost:8080/api/auth/signup", {
+    const res = await fetch("http://localhost:8080/api/user/signup", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -314,7 +257,7 @@ const Signup = () => {
     alert("Account created successfully!");
 
     // Optionally redirect to login page
-    // navigate("/login");
+    navigate("/login");
   } catch (error) {
     setIsLoading(false);
     console.error("Error signing up:", error);
@@ -392,26 +335,16 @@ const Signup = () => {
             />
           </InputGroup>
 
-          <CheckboxContainer>
-            <Checkbox
-              type="checkbox"
-              name="agreeToTerms"
-              id="agreeToTerms"
-              checked={formData.agreeToTerms}
-              onChange={handleChange}
-            />
-            <CheckboxLabel htmlFor="agreeToTerms">
-              I agree to the <a href="#terms">Terms of Service</a> and <a href="#privacy">Privacy Policy</a>
-            </CheckboxLabel>
-          </CheckboxContainer>
-
           <SignupButton onClick={handleSubmit} disabled={isLoading}>
             {isLoading ? 'Creating Account...' : 'Create Account'}
           </SignupButton>
         </Form>
 
         <LoginLink>
-          Already have an account? <a href="#login">Login</a>
+          Already have an account?{" "}
+          <span onClick={() => navigate("/login")}>
+            Login
+          </span>
         </LoginLink>
       </SignupCard>
     </Container>

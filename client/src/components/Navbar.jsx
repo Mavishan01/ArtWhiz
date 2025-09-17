@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { ExploreRounded, HomeRounded, AccountCircleRounded, CollectionsRounded, CreateRounded } from '@mui/icons-material';
+import { ExploreRounded, AccountCircleRounded, CollectionsRounded, CreateRounded, LoginRounded  } from '@mui/icons-material';
 import { useNavigate, useLocation } from 'react-router-dom';
 
 const Container = styled.div`
@@ -101,13 +101,6 @@ const Navbar = () => {
       
       {/* Desktop Navigation */}
       <NavLinks>
-        <NavButton 
-          active={path === "home" || path === ""}
-          onClick={() => navigate("/")}
-        >
-          <HomeRounded fontSize="small" />
-          <span>Home</span>
-        </NavButton>
         
         <NavButton 
           active={path === "explore"}
@@ -139,6 +132,14 @@ const Navbar = () => {
         >
           <AccountCircleRounded fontSize="small" />
           <span>Profile</span>
+        </NavButton>
+
+        <NavButton 
+          active={path === "login"}
+          onClick={() => navigate("/login")}
+        >
+          <LoginRounded fontSize="small" />
+          <span>Login</span>
         </NavButton>
         
       </NavLinks>

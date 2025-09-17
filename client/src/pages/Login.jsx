@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { FaPaintBrush } from "react-icons/fa";
+import { useNavigate } from 'react-router-dom';
 
 const fadeInUp = keyframes`
   from {
@@ -185,11 +186,12 @@ const SignupLink = styled.p`
   margin-top: 24px;
   font-size: 14px;
 
-  a {
+  span {
     color: ${({ theme }) => theme.primary};
     text-decoration: none;
     font-weight: 600;
     transition: all 0.3s ease;
+    cursor: pointer;
 
     &:hover {
       color: ${({ theme }) => theme.secondary};
@@ -199,6 +201,9 @@ const SignupLink = styled.p`
 `;
 
 const Login = () => {
+
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     email: '',
     password: ''
@@ -212,15 +217,39 @@ const Login = () => {
     });
   };
 
+
   const handleSubmit = async () => {
     setIsLoading(true);
-    
-    // Simulate login process
-    setTimeout(() => {
+
+    try {
+      const res = await fetch("http://localhost:8080/api/user/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: formData.email,
+          password: formData.password,
+        }),
+      });
+
+      const data = await res.json();
       setIsLoading(false);
-      console.log('Login attempt with:', formData);
-      // Handle login logic here
-    }, 1000);
+
+      if (!res.ok) {
+        alert(data.message || "Login failed");
+        return;
+      }
+
+      console.log("Login success:", data);
+
+      // Optionally store token or navigate
+      // localStorage.setItem("token", data.token);
+      navigate("/explore");
+
+    } catch (error) {
+      setIsLoading(false);
+      console.error("Login error:", error);
+      alert("Something went wrong. Please try again.");
+    }
   };
 
   return (
@@ -234,7 +263,7 @@ const Login = () => {
         </LogoContainer>
         
         <Subtitle>
-          Welcome back! Sign in to continue creating amazing visuals.
+          Welcome back! Login to continue creating amazing visuals.
         </Subtitle>
 
         <Form>
@@ -261,12 +290,15 @@ const Login = () => {
           </InputGroup>
 
           <LoginButton onClick={handleSubmit} disabled={isLoading}>
-            {isLoading ? 'Signing In...' : 'Sign In'}
+            {isLoading ? 'Logging in...' : 'Login'}
           </LoginButton>
         </Form>
 
         <SignupLink>
-          Don't have an account? <a href="#signup">Sign up</a>
+          Don't have an account?{" "}
+          <span onClick={() => navigate("/signup")}>
+            Sign up
+          </span>
         </SignupLink>
       </LoginCard>
     </Container>
