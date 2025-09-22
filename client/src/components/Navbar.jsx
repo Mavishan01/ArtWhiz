@@ -111,8 +111,8 @@ const Navbar = () => {
         </NavButton>
         
         <NavButton 
-          active={path === "my-creations"}
-          onClick={() => navigate("/my-creations")}
+          active={path === "myCreations"}
+          onClick={() => navigate("/myCreations")}
         >
           <CollectionsRounded fontSize="small" />
           <span>My Creations</span>

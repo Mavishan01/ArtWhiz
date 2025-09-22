@@ -8,6 +8,7 @@ import Navbar from "./components/Navbar";
 import Explore from "./pages/Explore";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
+import MyCreations from "./pages/MyCreations";
 import { Navigate } from "react-router-dom";
 
 const Container = styled.div`
@@ -46,6 +47,7 @@ function App() {
             <Route path="/login" element={<Login />} exact />
             <Route path="/signup" element={<Signup />} exact />
             <Route path="/explore" element={<PrivateRoute><Explore /></PrivateRoute>}/>
+            <Route path="/myCreations" element={<PrivateRoute><MyCreations /></PrivateRoute>} />
             <Route path="/createPost" element={<PrivateRoute><CreatePost /></PrivateRoute>}/>
           </Routes>
         </BrowserRouter>

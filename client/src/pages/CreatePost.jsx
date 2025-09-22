@@ -452,9 +452,11 @@ const CreatePost = () => {
       // image sending for Cloudinary + MongoDB
       const saveResponse = await fetch("http://localhost:8080/api/post/createPost", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
         body: JSON.stringify({
-          name: "Alice Johnson",
           prompt,
           image: result.image,
         })
