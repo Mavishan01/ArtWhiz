@@ -411,7 +411,6 @@ const DetailsText = styled.div`
 
 const CreatePost = () => {
   const [prompt, setPrompt] = useState('');
-  const [negativePrompt, setNegativePrompt] = useState('');
   const [selectedStyle, setSelectedStyle] = useState('Photorealistic');
   const [selectedRatio, setSelectedRatio] = useState('1:1');
   const [isGenerating, setIsGenerating] = useState(false);
@@ -566,16 +565,6 @@ const CreatePost = () => {
                         </RatioButton>
                       ))}
                     </RatioGrid>
-                  </div>
-
-                  {/* Negative Prompt */}
-                  <div>
-                    <Label>Negative Prompt (Optional)</Label>
-                    <NegativePromptTextarea
-                      value={negativePrompt}
-                      onChange={(e) => setNegativePrompt(e.target.value)}
-                      placeholder="What you don't want in the image: blurry, low quality, distorted..."
-                    />
                   </div>
 
                 </AdvancedContent>

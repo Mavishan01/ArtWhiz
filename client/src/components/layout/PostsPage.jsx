@@ -76,7 +76,7 @@ const PostsPage = ({ pageTitle, fetchPostsApi, statsMapper }) => {
             <ImageCard
               imageUrl={data.imageUrl}
               prompt={data.prompt}
-              author={data.name}
+              creator={data.creator}
             />
           </CardWrapper>
         ))}

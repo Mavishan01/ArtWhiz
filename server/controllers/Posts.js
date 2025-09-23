@@ -14,7 +14,7 @@ cloudinary.config({
 
 export const getAllPosts = async (req, res, next) => {
     try {
-        const posts = await Post.find();
+        const posts = await Post.find().populate('creator');
         return res.status(200).json({
             success: true,
             data: posts
@@ -26,13 +26,12 @@ export const getAllPosts = async (req, res, next) => {
 
 export const createPost = async (req, res, next) => {
     try {
-        const { name, prompt, image } = req.body;
-        const email = req?.user?.email;
+        const { prompt, image } = req.body;
+        const id = req?.user?.id;
         const imageUrl = await cloudinary.uploader.upload(image);
 
         const newPost = await Post.create({
-            name,
-            email,
+            creator: id,
             prompt,
             imageUrl: imageUrl.secure_url
         });
@@ -48,8 +47,12 @@ export const createPost = async (req, res, next) => {
 
 export const getMyPosts = async (req, res, next) => {
     try {
-        const email = req?.user?.email;
-        const posts = await Post.find({email});
+        const creator = req?.user?.id;
+        const posts = await Post.find({creator}).populate('creator');
+
+        // posts.forEach(post => {
+        //     console.log('creator:', post.creator);
+        // });
 
         return res.status(200).json({
             success: true,

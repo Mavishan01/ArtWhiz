@@ -46,7 +46,7 @@ const CardContainer = styled.div`
       opacity: 1;
     }
     
-    .author-info {
+    .creator-info {
       transform: translateY(0);
       opacity: 1;
     }
@@ -137,14 +137,14 @@ const ActionButton = styled.button`
   }
 `;
 
-const AuthorInfo = styled.div`
+const CreatorInfo = styled.div`
   transform: translateY(10px);
   opacity: 0;
   transition: all 0.3s ease;
   color: white;
 `;
 
-const AuthorName = styled.div`
+const CreatorName = styled.div`
   font-size: 14px;
   font-weight: 600;
   margin-bottom: 4px;
@@ -222,7 +222,7 @@ const StyleTag = styled.span`
 const ImageCard = ({ 
   imageUrl, 
   prompt, 
-  author, 
+  creator, 
   style = "Digital Art",
   likes = 0, 
   timeAgo = "2h ago",
@@ -253,9 +253,12 @@ const ImageCard = ({
     onShare && onShare();
   };
 
-  const getAuthorInitials = (name) => {
-    return name?.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase() || 'U';
-  };
+  // const getCreatorInitials = (name) => {
+  //   return (
+  //     (name?.firstName?.[0] || '') + 
+  //     (name?.lastName?.[0] || '')
+  //   ).toUpperCase() || 'NA';
+  // };
 
   return (
     <CardContainer className={className}>
@@ -280,12 +283,12 @@ const ImageCard = ({
             </ActionButton>
           </TopActions>
           
-          <AuthorInfo className="author-info">
-            <AuthorName>
-              <Avatar>{getAuthorInitials(author)}</Avatar>
-              {author}
-            </AuthorName>
-          </AuthorInfo>
+          <CreatorInfo className="creator-info">
+            <CreatorName>
+              <Avatar>{creator?.firstName[0].toUpperCase()}{creator?.lastName[0].toUpperCase()}</Avatar>
+              {creator?.firstName} {creator?.lastName}
+            </CreatorName>
+          </CreatorInfo>
         </ImageOverlay>
       </ImageContainer>
 
