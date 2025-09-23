@@ -44,7 +44,7 @@ import * as fs from "node:fs";
 export async function generateImage(req, res) {
 
   try {
-    const { prompt } = req.body;
+    const { prompt, aspectRatio } = req.body;
     const ai = new GoogleGenAI({});
 
     const response = await ai.models.generateImages({
@@ -52,6 +52,7 @@ export async function generateImage(req, res) {
       prompt: prompt || 'no input',
       config: {
         numberOfImages: 1,
+        aspectRatio
       },
     });
 

@@ -223,7 +223,7 @@ const ImageCard = ({
   imageUrl, 
   prompt, 
   creator, 
-  style = "Digital Art",
+  style,
   likes = 0, 
   timeAgo = "2h ago",
   onLike,

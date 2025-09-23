@@ -26,14 +26,20 @@ export const getAllPosts = async (req, res, next) => {
 
 export const createPost = async (req, res, next) => {
     try {
-        const { prompt, image } = req.body;
+        const { prompt, image, style, aspectRatio } = req.body;
         const id = req?.user?.id;
+
+        style = style?.trim() || 'General';
+        style = style.charAt(0).toUpperCase() + style.slice(1);
+
         const imageUrl = await cloudinary.uploader.upload(image);
 
         const newPost = await Post.create({
             creator: id,
             prompt,
-            imageUrl: imageUrl.secure_url
+            imageUrl: imageUrl.secure_url,
+            style,
+            aspectRatio,
         });
 
         return res.status(201).json({

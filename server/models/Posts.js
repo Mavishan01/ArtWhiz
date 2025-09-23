@@ -15,6 +15,12 @@ const PostSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    style: {
+        type: String,
+    },
+    aspectRatio: {
+        type: String,
+    }
 },
 {
     timestamps: true,

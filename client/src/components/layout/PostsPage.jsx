@@ -77,6 +77,7 @@ const PostsPage = ({ pageTitle, fetchPostsApi, statsMapper }) => {
               imageUrl={data.imageUrl}
               prompt={data.prompt}
               creator={data.creator}
+              style={data.style || ' General'}
             />
           </CardWrapper>
         ))}
