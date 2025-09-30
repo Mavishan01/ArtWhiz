@@ -41,9 +41,17 @@ const CreatePost = () => {
         }),
       });
 
-      if (!response.ok) {
-        throw new Error("Failed to generate image");
-      }
+      // token errors
+        if (!response.ok) {
+          if (response.status === 401 || response.status === 403) {
+            console.error("Invalid or expired token");
+            
+            window.location.href = "/login";
+          } else {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          return; // stop execution
+        }
     
       const result = await response.json();
         setGeneratedImage({

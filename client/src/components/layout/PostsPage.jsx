@@ -19,6 +19,19 @@ const PostsPage = ({ pageTitle, fetchPostsApi, statsMapper }) => {
     const fetchPosts = async () => {
       try {
         const response = await fetchPostsApi();
+
+        // token errors
+        if (!response.ok) {
+          if (response.status === 401 || response.status === 403) {
+            console.error("Invalid or expired token");
+            
+            window.location.href = "/login";
+          } else {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          return; // stop execution
+        }
+
         const result = await response.json();
         const data = result.data || [];
         setPosts(data);

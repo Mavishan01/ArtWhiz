@@ -61,12 +61,16 @@ export const login = async (req, res, next) => {
             });
         }
 
-        // JWT token
+        //JWT
         const token = jwt.sign(
         { id: user._id, email: user.email },
         process.env.JWT_SECRET,
-        { expiresIn: "1d" }
+        { expiresIn: "5m" }
         );
+
+        const decoded = jwt.decode(token);
+        console.log("Issued at:", new Date(decoded.iat * 1000));
+        console.log("Expires at:", new Date(decoded.exp * 1000));
 
         const userWithoutPassword = user.toObject();
         delete userWithoutPassword.password;
