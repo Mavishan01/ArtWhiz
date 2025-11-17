@@ -49,12 +49,18 @@ const PostsPage = ({ pageTitle, fetchPostsApi, statsMapper }) => {
   }, [fetchPostsApi, statsMapper]);
 
   useEffect(() => {
-    setFilteredData(posts.slice(0, visibleItems));
-  }, [posts, visibleItems]);
+    const filtered = posts.filter( post => 
+      post.prompt?.toLowerCase().includes(searchQuery.toLocaleLowerCase()) ||
+      post.creator?.firstName?.toLowerCase().includes(searchQuery.toLocaleLowerCase()) ||
+      post.creator?.lastName?.toLowerCase().includes(searchQuery.toLocaleLowerCase())
+    )
 
-  useEffect(() => {
-    console.log('stats: ', stats);
-  })
+    setFilteredData(filtered.slice(0, visibleItems));
+  }, [posts, visibleItems, searchQuery]);
+
+  // useEffect(() => {
+  //   console.log('stats: ', stats);
+  // })
 
   return (
     <Container>

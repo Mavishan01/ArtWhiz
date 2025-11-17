@@ -134,6 +134,7 @@ const Navbar = () => {
           <span>Profile</span>
         </NavButton>
 
+        {( path === "home" || path === "login" || path === "login" ) && (
         <NavButton 
           active={path === "login"}
           onClick={() => navigate("/login")}
@@ -141,6 +142,7 @@ const Navbar = () => {
           <LoginRounded fontSize="small" />
           <span>Login</span>
         </NavButton>
+      )}
         
       </NavLinks>
       
