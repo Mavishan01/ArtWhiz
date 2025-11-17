@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-import User from "./Users.js";
 
 const PostSchema = new mongoose.Schema({
     creator: {

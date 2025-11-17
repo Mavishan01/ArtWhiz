@@ -1,48 +1,13 @@
 import * as dotenv from "dotenv";
-import OpenAI from 'openai';
 import { writeFile } from "fs/promises";
 
 dotenv.config();
-
-// const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-// // const client = new OpenAI();
-
-
-// export const generateImage = async () => {
-//   try {
-//     const img = await client.images.generate({
-//       model: "dall-e-2",
-//       prompt: "A cute baby sea otter",
-//       n: 1,
-//       size: "256x256"
-//     });
-
-//     // Safety check: ensure the API returned data
-//     if (!img.data || !img.data[0]?.b64_json) {
-//       throw new Error("No image returned from OpenAI API");
-//     }
-
-//     // Convert Base64 string to binary
-//     const imageBuffer = Buffer.from(img.data[0].b64_json, "base64");
-
-//     // Save to file
-//     await writeFile("output.png", imageBuffer);
-
-//     console.log("✅ Image saved as output.png");
-//   } catch (error) {
-//     console.error("Error generating image:", error.message);
-//   }
-
-// // const models = await client.models.list();
-// // console.log(models.data.map(m => m.id));
-
-// };
 
 import { GoogleGenAI } from "@google/genai";
 import * as fs from "node:fs";
 
 export async function generateImage(req, res) {
-
+  // console.log("➡️ Entered generateImage()");
   try {
     const { prompt, aspectRatio } = req.body;
     const ai = new GoogleGenAI({});

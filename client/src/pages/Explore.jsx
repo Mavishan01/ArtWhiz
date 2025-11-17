@@ -13,8 +13,9 @@ const Explore = () => {
 
   const statsMapper = (posts) => [
     { label: 'Total Images', value: posts.length },
-    { label: 'Artists', value: new Set(posts.map(p => p.name)).size },
-    { label: 'Art Styles', value: new Set(posts.map(p => p.style)).size },
+    { label: 'Creators', value: new Set(posts.map(p => p.creator?._id).filter(Boolean)).size },
+    { label: 'Art Styles', value: new Set(posts.map(p => p.style?.trim().toLowerCase() ).filter(Boolean) ).size },
+
   ];
 
   return <PostsPage pageTitle="Explore Creations" fetchPostsApi={fetchAllPosts} statsMapper={statsMapper} />;

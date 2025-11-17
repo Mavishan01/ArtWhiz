@@ -52,6 +52,10 @@ const PostsPage = ({ pageTitle, fetchPostsApi, statsMapper }) => {
     setFilteredData(posts.slice(0, visibleItems));
   }, [posts, visibleItems]);
 
+  useEffect(() => {
+    console.log('stats: ', stats);
+  })
+
   return (
     <Container>
       <Header>

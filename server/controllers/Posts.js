@@ -26,13 +26,14 @@ export const getAllPosts = async (req, res, next) => {
 
 export const createPost = async (req, res, next) => {
     try {
-        const { prompt, image, style, aspectRatio } = req.body;
+        let { prompt, image, style, aspectRatio } = req.body;
         const id = req?.user?.id;
 
         style = style?.trim() || 'General';
         style = style.charAt(0).toUpperCase() + style.slice(1);
 
         const imageUrl = await cloudinary.uploader.upload(image);
+        console.log('Image uploaded to Cloudinary');
 
         const newPost = await Post.create({
             creator: id,
@@ -41,12 +42,14 @@ export const createPost = async (req, res, next) => {
             style,
             aspectRatio,
         });
+        console.log('Post saved in mongodb');
 
         return res.status(201).json({
             success: true,
             data: newPost
         });
     } catch (error) {
+        console.error('❌ Error in createPost:', error);
         next(error);
     }
 }
@@ -68,3 +71,46 @@ export const getMyPosts = async (req, res, next) => {
         next(error);
     }
 }
+
+export const getPostStatsForHome = async (req, res, next) => {
+    try {
+       const stats = await Post.aggregate([
+        {
+            $facet: {
+            totalPosts: [{ $count: "count" }],
+            uniqueCreators: [
+                { $group: { _id: "$creator" } },
+                { $count: "count" }
+            ],
+            uniqueStyles: [
+                { $group: { _id: "$style" } },
+                { $count: "count" }
+            ]
+            }
+        }
+    ]);
+
+    // Extract counts safely with fallback values
+    const result = {
+      totalPosts: stats[0]?.totalPosts?.[0]?.count || 0,
+      uniqueCreators: stats[0]?.uniqueCreators?.[0]?.count || 0,
+      uniqueStyles: stats[0]?.uniqueStyles?.[0]?.count || 0
+    };
+
+    console.log(result);
+
+    // Send JSON response
+    res.status(200).json({
+      success: true,
+      data: result
+    });
+
+    } catch (error) {
+        console.error("Error fetching post stats:", error);
+        res.status(500).json({
+            success: false,
+            message: "Server Error: Could not fetch post stats",
+            error: error.message
+        });
+    }
+};

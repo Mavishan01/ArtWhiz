@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import { SearchRounded, FilterListRounded } from '@mui/icons-material';
 
 export const Container = styled.div`
   height: 100vh;

@@ -317,7 +317,7 @@ const ImageCard = ({
               </ActionButton>
             </StatItem>
           </Stats>
-          <TimeAgo>{timeAgo}</TimeAgo>
+          {/* <TimeAgo>{timeAgo}</TimeAgo> */}
         </MetaInfo>
       </ContentSection>
     </CardContainer>

@@ -341,28 +341,41 @@ const Home = () => {
 
   useEffect(() => {
     // Animate counter numbers
-    const animateStats = () => {
-      const targets = { images: 50420, users: 12340, styles: 25 };
-      const duration = 2000;
-      const steps = 60;
-      const stepDuration = duration / steps;
-      let currentStep = 0;
-
-      const timer = setInterval(() => {
-        currentStep++;
-        const progress = currentStep / steps;
-        
-        setStats({
-          images: Math.floor(targets.images * progress),
-          users: Math.floor(targets.users * progress),
-          styles: Math.floor(targets.styles * progress)
+    const animateStats = async () => {
+      try {
+        const fetchedStats = await fetch("http://localhost:8080/api/post/getPostStatsForHome", {
+          method: "GET",
         });
 
-        if (currentStep >= steps) {
-          clearInterval(timer);
-          setStats(targets);
-        }
-      }, stepDuration);
+        var targets  = await fetchedStats.json();
+        targets = { images: targets.data.totalPosts , users: targets.data.uniqueCreators, styles: targets.data.uniqueStyles };
+
+        const duration = 2000;
+        const steps = 60;
+        const stepDuration = duration / steps;
+        let currentStep = 0;
+
+        const timer = setInterval(() => {
+          currentStep++;
+          const progress = currentStep / steps;
+          
+          setStats({
+            images: Math.floor(targets.images * progress),
+            users: Math.floor(targets.users * progress),
+            styles: Math.floor(targets.styles * progress)
+          });
+
+          if (currentStep >= steps) {
+            clearInterval(timer);
+            setStats(targets);
+          }
+        }, stepDuration);
+
+      } catch (error) {
+        const targets = { images: 0, users: 0, styles: 0 };
+        setStats(targets);
+      } 
+
     };
 
     const timer = setTimeout(animateStats, 1000);
