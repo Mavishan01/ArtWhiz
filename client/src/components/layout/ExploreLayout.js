@@ -33,6 +33,7 @@ export const Title = styled.h1`
 `;
 
 export const SearchSection = styled.div`
+  position: relative;
   display: flex;
   gap: 12px;
   align-items: center;
@@ -82,6 +83,43 @@ export const FilterButton = styled.button`
   &:hover {
     border-color: ${({ theme }) => theme.primary};
     background: ${({ theme }) => theme.primary}10;
+  }
+`;
+
+export const Dropdown = styled.div`
+  position: absolute;
+  top: 110%;
+  right: 0;
+  background: ${({ theme }) => theme.card};
+  border: 1px solid ${({ theme }) => theme.text_secondary}30;
+  border-radius: 12px;
+  padding: 10px;
+  min-width: 160px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+  z-index: 999;
+`;
+
+
+export const DropdownItem = styled.div`
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  color: ${({ theme }) => theme.text_primary};
+  font-size: 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  &:hover {
+    background: ${({ theme }) => theme.primary}15;
+  }
+
+  &.active {
+    background: ${({ theme }) => theme.primary}25;
+    color: ${({ theme }) => theme.primary};
+    font-weight: 600;
   }
 `;
 

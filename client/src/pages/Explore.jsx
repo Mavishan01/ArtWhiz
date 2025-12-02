@@ -18,7 +18,12 @@ const Explore = () => {
 
   ];
 
-  return <PostsPage pageTitle="Explore Creations" fetchPostsApi={fetchAllPosts} statsMapper={statsMapper} />;
+  const filtersMapper = (posts) => 
+    [ 
+      ...new Set(posts.map(p => p.style?.trim().toLowerCase() ).filter(Boolean)) 
+    ];
+
+  return <PostsPage pageTitle="Explore Creations" fetchPostsApi={fetchAllPosts} statsMapper={statsMapper} filtersMapper={filtersMapper} />;
 };
 
 export default Explore;

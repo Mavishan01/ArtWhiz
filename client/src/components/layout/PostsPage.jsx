@@ -1,19 +1,32 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import {
   Container, Header, Title, SearchSection, SearchBar, SearchInput, FilterButton,
-  MasonryGrid, CardWrapper, LoadMoreButton, StatsBar, StatItem, StatNumber, StatLabel
+  MasonryGrid, CardWrapper, LoadMoreButton, StatsBar, StatItem, StatNumber, StatLabel,
+  Dropdown, DropdownItem,
 } from './ExploreLayout';
 import { SearchRounded, FilterListRounded } from '@mui/icons-material';
+import CheckIcon from '@mui/icons-material/Check';
 import ImageCard from '../ImageCard';
 
-const PostsPage = ({ pageTitle, fetchPostsApi, statsMapper }) => {
+
+const PostsPage = ({ pageTitle, fetchPostsApi, statsMapper, filtersMapper }) => {
+  const initialVisibleItemsCount = 10;
+
   const [searchQuery, setSearchQuery] = useState('');
-  const [visibleItems, setVisibleItems] = useState(8);
+  const [filters, setFilters] = useState([]);
+  const [selectedFilters, setSelectedFilters] = useState([]);
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [visibleItemsCount, setVisibleItemsCount] = useState(initialVisibleItemsCount);
   const [posts, setPosts] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
   const [stats, setStats] = useState([]);
 
-  const loadMore = () => setVisibleItems(prev => prev + 8);
+  const dropDownRef = useRef(null);
+
+  const loadMore = () => {
+    setVisibleItemsCount(prev => prev + 8);
+    console.log('visibleItems: ', visibleItemsCount);
+  }
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -36,31 +49,66 @@ const PostsPage = ({ pageTitle, fetchPostsApi, statsMapper }) => {
         const data = result.data || [];
         setPosts(data);
 
-        if (statsMapper) {
+        if (statsMapper && filtersMapper) {
           setStats(statsMapper(data));
+          setFilters(filtersMapper(data));
         }
       } catch (error) {
         console.error('Failed to fetch posts:', error);
         setPosts([]);
         if (statsMapper) setStats([]);
+        if (filtersMapper) setFilters([]);
       }
     };
+
+     
     fetchPosts();
-  }, [fetchPostsApi, statsMapper]);
+  }, [fetchPostsApi, statsMapper, filtersMapper]);
 
   useEffect(() => {
-    const filtered = posts.filter( post => 
-      post.prompt?.toLowerCase().includes(searchQuery.toLocaleLowerCase()) ||
-      post.creator?.firstName?.toLowerCase().includes(searchQuery.toLocaleLowerCase()) ||
-      post.creator?.lastName?.toLowerCase().includes(searchQuery.toLocaleLowerCase())
+    const filtered = posts.filter( post => {
+
+      const matchesSearch = 
+        post.prompt?.toLowerCase().includes(searchQuery.toLocaleLowerCase()) ||
+        post.creator?.firstName?.toLowerCase().includes(searchQuery.toLocaleLowerCase()) ||
+        post.creator?.lastName?.toLowerCase().includes(searchQuery.toLocaleLowerCase());
+
+      const matchesFilters = 
+        selectedFilters.length === 0 ||
+        selectedFilters.includes(post.style?.toLocaleLowerCase());
+
+      return matchesSearch && matchesFilters;
+      }
     )
 
-    setFilteredData(filtered.slice(0, visibleItems));
-  }, [posts, visibleItems, searchQuery]);
+    setFilteredData(filtered.slice(0, visibleItemsCount));
 
-  // useEffect(() => {
-  //   console.log('stats: ', stats);
-  // })
+  }, [posts, visibleItemsCount, searchQuery, selectedFilters]);
+
+  useEffect(() => {   // for clicking outside the dropdown
+    function handleClickOutside(event) {
+      if (showDropdown && dropDownRef.current && !dropDownRef.current.contains(event.target)) {
+        setShowDropdown(false);
+      }
+    }
+    
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);   
+    }
+  }, [showDropdown])
+  
+
+  useEffect(() => {
+    console.log('filters: ', filters);
+    console.log(Array.isArray(filters));
+  }, [filters]);
+
+  useEffect(() => {
+    console.log('first post: ', filteredData[0]);
+  }, [filteredData]);
+
 
   return (
     <Container>
@@ -75,10 +123,40 @@ const PostsPage = ({ pageTitle, fetchPostsApi, statsMapper }) => {
               onChange={(e) => setSearchQuery(e.target.value)}
             />
           </SearchBar>
-          <FilterButton>
+
+          <FilterButton onClick={() => setShowDropdown(prev => !prev)}>
             <FilterListRounded fontSize="small" />
             Filter
           </FilterButton>
+
+          {showDropdown && (
+            <Dropdown ref={dropDownRef}>
+              {filters.map(style => {
+                const isActive = selectedFilters.includes(style);
+                
+                return (
+                <DropdownItem 
+                  key={style}
+                  className={isActive? "active" : ""}
+                  onClick={() => {
+                    setSelectedFilters(prev => 
+                      prev.includes(style)
+                        ? prev.filter(s => s !== style)
+                        : [...prev, style]
+                    );
+                  }}
+                >
+                  {style} 
+                  {isActive && (
+                    <CheckIcon />
+                  )}
+
+                </DropdownItem>
+                );
+              })}
+            </Dropdown>
+          )}
+
         </SearchSection>
       </Header>
 
@@ -106,7 +184,7 @@ const PostsPage = ({ pageTitle, fetchPostsApi, statsMapper }) => {
         ))}
       </MasonryGrid>
 
-      {visibleItems < posts.length && (
+      {visibleItemsCount < posts.length && (
         <LoadMoreButton onClick={loadMore}>
           Load More
         </LoadMoreButton>
